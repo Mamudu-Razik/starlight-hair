@@ -48,7 +48,7 @@ export function Footer() {
             <ul className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
               {navLinks.map((l) => (
                 <li key={l.href}>
-                  <TransitionLink href={l.href} className="text-mist transition-colors hover:text-gold">
+                  <TransitionLink href={l.href} className="inline-block py-1 text-mist transition-colors hover:text-gold">
                     {l.label}
                   </TransitionLink>
                 </li>

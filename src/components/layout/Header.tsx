@@ -36,6 +36,13 @@ export function Header() {
 
   useEffect(() => setOpen(false), [pathname]);
 
+  // Prefetch the menu chunk when the browser is idle, so the first tap on touch devices opens instantly.
+  useEffect(() => {
+    const ric = window.requestIdleCallback ?? ((cb: () => void) => window.setTimeout(cb, 1500));
+    const id = ric(() => void import("./Menu"));
+    return () => (window.cancelIdleCallback ?? window.clearTimeout)(id as number);
+  }, []);
+
   // Lock page scroll while the menu is open; released the moment it starts closing.
   useEffect(() => {
     if (!open) return;
@@ -65,7 +72,7 @@ export function Header() {
         {/* Glass layer fades in via opacity only */}
         <div
           aria-hidden
-          className="absolute inset-0 border-b border-line bg-midnight/65 backdrop-blur-xl transition-opacity duration-500"
+          className="absolute inset-0 border-b border-line bg-midnight/85 backdrop-blur-md transition-opacity duration-500 lg:bg-midnight/65 lg:backdrop-blur-xl"
           style={{ opacity: glass && !open ? 1 : 0 }}
         />
         <div className="relative mx-auto flex h-18 max-w-[1600px] items-center justify-between px-4 sm:px-8 md:h-20">

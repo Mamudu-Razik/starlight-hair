@@ -49,7 +49,8 @@ export function MenuOverlay({ onClose }: { onClose: () => void }) {
       role="dialog"
       aria-modal="true"
       aria-label="Site menu"
-      className="fixed inset-0 z-[65] overflow-y-auto bg-ink"
+      className="fixed inset-0 z-[65] overflow-y-auto overscroll-contain bg-ink"
+      data-lenis-prevent
       initial={{ clipPath: "inset(0% 0% 100% 0%)" }}
       animate={{ clipPath: "inset(0% 0% 0% 0%)" }}
       exit={{ clipPath: "inset(0% 0% 100% 0%)" }}

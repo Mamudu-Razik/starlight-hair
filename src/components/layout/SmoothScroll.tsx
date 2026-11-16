@@ -31,7 +31,8 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
     let tick: ((time: number) => void) | null = null;
 
     const start = () => {
-      instance = new Lenis({ lerp: 0.1, wheelMultiplier: 1, anchors: false });
+      // Touch devices keep native momentum scrolling (syncTouch off) — it's smoother than any JS emulation.
+      instance = new Lenis({ lerp: 0.085, wheelMultiplier: 0.95, touchMultiplier: 1, syncTouch: false, anchors: false });
       instance.on("scroll", ScrollTrigger.update);
       tick = (time: number) => instance?.raf(time * 1000);
       gsap.ticker.add(tick);

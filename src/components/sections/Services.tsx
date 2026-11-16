@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
+import { prefersReducedMotion } from "@/lib/gsap";
 import { AnimatePresence, LazyMotion, m } from "framer-motion";
 import { loadMotionFeatures } from "@/lib/motion";
 import { gsap } from "@/lib/gsap";
@@ -66,6 +67,20 @@ export function Services() {
   const listArea = useRef<HTMLDivElement>(null);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const category = serviceCategories[index];
+  const firstRender = useRef(true);
+
+  // Keep the selected tab visible in the horizontally scrolling tab bar (phones / tablets).
+  useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
+    }
+    const tab = tabRefs.current[index];
+    const bar = tab?.parentElement;
+    if (!tab || !bar || bar.scrollWidth <= bar.clientWidth) return;
+    const target = tab.offsetLeft - (bar.clientWidth - tab.offsetWidth) / 2;
+    bar.scrollTo({ left: target, behavior: prefersReducedMotion() ? "auto" : "smooth" });
+  }, [index]);
 
   const onTabKey = (e: KeyboardEvent<HTMLDivElement>) => {
     const last = serviceCategories.length - 1;
@@ -82,7 +97,7 @@ export function Services() {
 
   return (
     <LazyMotion features={loadMotionFeatures} strict>
-    <section id="services" aria-labelledby="services-title" className="relative bg-ink py-28 md:py-40">
+    <section id="services" aria-labelledby="services-title" className="relative bg-ink py-20 sm:py-28 lg:py-40">
       <div className="mx-auto max-w-[1600px] px-4 sm:px-8">
         <div className="grid gap-10 md:grid-cols-12 md:items-end">
           <div className="md:col-span-7">
@@ -109,7 +124,7 @@ export function Services() {
           role="tablist"
           aria-label="Service categories"
           onKeyDown={onTabKey}
-          className="no-scrollbar -mx-4 mt-16 flex gap-2 overflow-x-auto px-4 sm:mx-0 sm:flex-wrap sm:px-0"
+          className="no-scrollbar relative -mx-4 mt-12 flex snap-x gap-1.5 overflow-x-auto overscroll-x-contain scroll-px-4 px-4 [mask-image:linear-gradient(90deg,transparent,#000_16px,#000_calc(100%-40px),transparent)] sm:-mx-8 sm:mt-16 sm:scroll-px-8 sm:px-8 lg:mx-0 lg:flex-wrap lg:overflow-visible lg:px-0 lg:[mask-image:none]"
         >
           {serviceCategories.map((c, i) => {
             const selected = i === index;
@@ -125,7 +140,7 @@ export function Services() {
                 aria-controls={`panel-${c.id}`}
                 tabIndex={selected ? 0 : -1}
                 onClick={() => setIndex(i)}
-                className={`relative shrink-0 rounded-full px-5 py-2.5 text-[0.75rem] font-semibold uppercase tracking-[0.18em] transition-colors duration-300 ${
+                className={`relative shrink-0 snap-start rounded-full px-5 py-3 text-[0.75rem] font-semibold uppercase tracking-[0.18em] transition-colors duration-300 ${
                   selected ? "text-midnight" : "text-mist hover:text-pearl"
                 }`}
               >
@@ -143,7 +158,7 @@ export function Services() {
         </div>
 
         {/* Panel */}
-        <div ref={listArea} className="mt-10 min-h-[22rem]" onPointerLeave={() => setHovered(null)}>
+        <div ref={listArea} className="mt-8 min-h-[22rem] sm:mt-10" onPointerLeave={() => setHovered(null)}>
           <AnimatePresence mode="wait" initial={false}>
             <m.div
               key={category.id}
@@ -154,7 +169,7 @@ export function Services() {
               animate={{ opacity: 1, y: 0, transition: { duration: 0.6, ease } }}
               exit={{ opacity: 0, y: -12, transition: { duration: 0.25 } }}
             >
-              <p className="mb-6 font-display text-xl italic text-gold-soft md:text-2xl">{category.intro}</p>
+              <p className="mb-4 font-display text-lg italic leading-snug text-gold-soft sm:mb-6 sm:text-xl md:text-2xl">{category.intro}</p>
               <ul>
                 {category.services.map((s, i) => (
                   <m.li
@@ -162,24 +177,27 @@ export function Services() {
                     initial={{ opacity: 0, y: 16 }}
                     animate={{ opacity: 1, y: 0, transition: { delay: 0.05 * i, duration: 0.6, ease } }}
                     onPointerEnter={() => fine && setHovered(s.image)}
-                    className="group flex items-center gap-4 border-b border-line py-5 md:py-6"
+                    className="group flex items-center gap-4 border-b border-line py-4 sm:py-5 md:py-6"
                   >
-                    {/* Mobile: inline thumbnail replaces the hover preview */}
-                    <span className="relative h-14 w-11 shrink-0 overflow-hidden rounded-[2px] md:hidden">
+                    {/* Touch devices: inline thumbnail replaces the cursor-following preview */}
+                    <span className="relative h-14 w-11 shrink-0 overflow-hidden rounded-[2px] [@media(hover:hover)_and_(pointer:fine)]:hidden">
                       <Image src={serviceImages[s.image].src} alt="" fill sizes="44px" className="object-cover" />
                     </span>
-                    <span className="font-display text-[1.6rem] leading-tight text-pearl transition-[color,transform] duration-500 ease-[var(--ease-starlight)] group-hover:translate-x-2 group-hover:text-gold md:text-4xl">
+                    {/* Phones: name above price. sm+: luxury-menu row with dotted leader */}
+                    <span className="flex min-w-0 flex-1 flex-col gap-1 sm:flex-row sm:items-center sm:gap-4">
+                    <span className="font-display text-[1.45rem] leading-tight text-pearl transition-[color,transform] duration-500 ease-[var(--ease-starlight)] group-hover:translate-x-2 group-hover:text-gold sm:text-[1.75rem] md:text-4xl">
                       {s.name}
                     </span>
-                    <span aria-hidden className="mb-2 hidden flex-1 self-end border-b border-dotted border-gold/40 sm:block" />
+                    <span aria-hidden className="mb-2 hidden min-w-8 flex-1 self-end border-b border-dotted border-gold/40 sm:block" />
                     <span
-                      className={`ml-auto shrink-0 text-right sm:ml-0 ${
+                      className={`shrink-0 sm:text-right ${
                         s.price === null
-                          ? "max-w-[9rem] text-[0.7rem] uppercase leading-snug tracking-[0.18em] text-mist sm:max-w-none"
-                          : "font-display text-2xl text-gold md:text-3xl"
+                          ? "text-[0.66rem] uppercase leading-snug tracking-[0.18em] text-mist"
+                          : "font-display text-xl leading-none text-gold sm:text-2xl md:text-3xl"
                       }`}
                     >
                       {formatPrice(s)}
+                    </span>
                     </span>
                   </m.li>
                 ))}

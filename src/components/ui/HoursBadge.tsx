@@ -16,7 +16,7 @@ export function HoursBadge({ className = "" }: { className?: string }) {
 
   return (
     <p
-      className={`inline-flex items-center gap-2.5 rounded-full border border-pearl/15 bg-midnight/40 px-4 py-2 text-[0.72rem] font-medium uppercase tracking-[0.2em] text-pearl backdrop-blur-md ${className}`}
+      className={`inline-flex items-center gap-2.5 rounded-full border border-pearl/15 bg-midnight/70 px-4 py-2 text-[0.72rem] font-medium uppercase tracking-[0.2em] text-pearl sm:bg-midnight/40 sm:backdrop-blur-md ${className}`}
       aria-live="polite"
     >
       <span className="relative flex h-2 w-2" aria-hidden>

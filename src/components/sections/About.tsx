@@ -30,7 +30,7 @@ export function About() {
         {
           yPercent: 8,
           ease: "none",
-          scrollTrigger: { trigger: media.current, start: "top bottom", end: "bottom top", scrub: true },
+          scrollTrigger: { trigger: media.current, start: "top bottom", end: "bottom top", scrub: 0.6 },
         },
       );
     }, media);
@@ -38,9 +38,9 @@ export function About() {
   }, []);
 
   return (
-    <section id="about" aria-labelledby="about-title" className="relative mx-auto max-w-[1600px] px-4 py-28 sm:px-8 md:py-44">
-      <div className="grid gap-16 md:grid-cols-12 md:gap-10">
-        <div className="md:col-span-7 md:pr-10">
+    <section id="about" aria-labelledby="about-title" className="relative mx-auto max-w-[1600px] px-4 py-20 sm:px-8 sm:py-28 lg:py-44">
+      <div className="grid gap-14 lg:grid-cols-12 lg:gap-10">
+        <div className="lg:col-span-7 lg:pr-10">
           <Reveal as="p" className="eyebrow mb-8 flex items-center gap-3">
             <Star className="h-3 w-3" /> {about.eyebrow}
           </Reveal>
@@ -52,32 +52,32 @@ export function About() {
           >
             {about.heading}
           </Reveal>
-          <div className="hairline my-12 w-full" />
-          <Reveal as="p" variant="words-scrub" className="max-w-2xl text-lg leading-[1.75] text-pearl md:text-xl">
+          <div className="hairline my-10 w-full sm:my-12" />
+          <Reveal as="p" variant="words-scrub" className="max-w-2xl text-[1.05rem] leading-[1.75] text-pearl sm:text-lg md:text-xl">
             {about.body}
           </Reveal>
 
-          <Reveal as="dl" staggerChildren className="mt-16 grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-4">
+          <Reveal as="dl" staggerChildren className="mt-12 grid grid-cols-2 gap-x-5 gap-y-8 sm:mt-16 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
             {stats.map((s) => (
               <div key={s.label} className="border-t border-line pt-5">
                 <dt className="sr-only">{s.label}</dt>
-                <dd className="font-display text-5xl font-light text-gold md:text-6xl">
+                <dd className="whitespace-nowrap font-display text-[2.6rem] font-light leading-none text-gold sm:text-5xl xl:text-6xl">
                   <Counter value={s.value} prefix={s.prefix} suffix={s.suffix} />
                 </dd>
-                <dd className="mt-2 text-xs font-medium uppercase tracking-[0.2em] text-mist">{s.label}</dd>
+                <dd className="mt-3 text-[0.68rem] font-medium uppercase leading-relaxed tracking-[0.18em] text-mist">{s.label}</dd>
               </div>
             ))}
           </Reveal>
         </div>
 
-        <div ref={media} className="relative md:col-span-5">
-          <Reveal variant="clip" className="relative aspect-[4/5] w-full overflow-hidden rounded-[2px]">
+        <div ref={media} className="relative lg:col-span-5">
+          <Reveal variant="clip" className="relative aspect-[4/5] w-full overflow-hidden rounded-[2px] md:aspect-[16/10] lg:aspect-[4/5]">
             <div data-parallax className="absolute -inset-y-[10%] inset-x-0 will-change-transform">
               <Image
                 src="/images/salon.jpg"
                 alt="Black-and-white photo of a modern salon with styling chairs and tall windows"
                 fill
-                sizes="(min-width: 768px) 40vw, 100vw"
+                sizes="(min-width: 1024px) 40vw, 100vw"
                 className="object-cover grayscale-[30%]"
               />
             </div>

@@ -26,7 +26,7 @@ function Card({ title, body, index }: { title: string; body: string; index: numb
   return (
     <article
       onPointerMove={onMove}
-      className="group relative isolate overflow-hidden rounded-[4px] bg-ink p-8 md:p-10"
+      className="group relative isolate overflow-hidden rounded-[4px] bg-ink p-6 sm:p-8 lg:p-10"
       style={{ ["--mx" as string]: "50%", ["--my" as string]: "0%" }}
     >
       {/* Border glow: a 1px ring masked to follow the cursor */}
@@ -52,17 +52,17 @@ function Card({ title, body, index }: { title: string; body: string; index: numb
       <svg viewBox="0 0 24 24" className="h-9 w-9 text-gold" fill="none" stroke="currentColor" strokeWidth="1.1" aria-hidden>
         {icons[index % icons.length]}
       </svg>
-      <h3 className="mt-14 font-display text-3xl leading-tight text-pearl md:text-[2.4rem]">{title}</h3>
+      <h3 className="mt-8 font-display text-[1.75rem] leading-tight text-pearl sm:mt-14 sm:text-3xl xl:text-[2.4rem]">{title}</h3>
       <p className="mt-4 leading-relaxed text-mist">{body}</p>
-      <span className="absolute right-8 top-8 text-xs font-semibold tracking-[0.25em] text-gold/70">0{index + 1}</span>
+      <span className="absolute right-6 top-6 text-xs sm:right-8 sm:top-8 font-semibold tracking-[0.25em] text-gold/70">0{index + 1}</span>
     </article>
   );
 }
 
 export function WhyStarlight() {
   return (
-    <section aria-labelledby="why-title" className="mx-auto max-w-[1600px] px-4 py-28 sm:px-8 md:py-40">
-      <div className="mb-16 max-w-3xl">
+    <section aria-labelledby="why-title" className="mx-auto max-w-[1600px] px-4 py-20 sm:px-8 sm:py-28 lg:py-40">
+      <div className="mb-10 max-w-3xl sm:mb-16">
         <Reveal as="p" className="eyebrow mb-6 flex items-center gap-3">
           <Star className="h-3 w-3" /> Why Starlight
         </Reveal>
@@ -70,7 +70,7 @@ export function WhyStarlight() {
           Everything you need, <span className="italic text-gold">a short walk</span> from Turnpike Lane
         </Reveal>
       </div>
-      <Reveal staggerChildren className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <Reveal staggerChildren className="grid gap-3 sm:grid-cols-2 sm:gap-4 xl:grid-cols-4">
         {features.map((f, i) => (
           <Card key={f.title} title={f.title} body={f.body} index={i} />
         ))}

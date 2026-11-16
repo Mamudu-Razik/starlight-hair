@@ -13,7 +13,7 @@ export function Testimonials() {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const track = useRef<HTMLDivElement>(null);
-  const drag = useRef<{ startX: number; baseX: number; dx: number; id: number } | null>(null);
+  const drag = useRef<{ startX: number; baseX: number; dx: number; id: number; t: number } | null>(null);
   const count = testimonials.length;
 
   const go = useCallback((i: number) => setIndex(((i % count) + count) % count), [count]);
@@ -49,7 +49,7 @@ export function Testimonials() {
 
   const onDown = (e: PointerEvent<HTMLDivElement>) => {
     if (e.button !== 0) return;
-    drag.current = { startX: e.clientX, baseX: targetX(), dx: 0, id: e.pointerId };
+    drag.current = { startX: e.clientX, baseX: targetX(), dx: 0, id: e.pointerId, t: performance.now() };
     e.currentTarget.setPointerCapture(e.pointerId);
     setPaused(true);
   };
@@ -57,14 +57,19 @@ export function Testimonials() {
     const d = drag.current;
     if (!d || d.id !== e.pointerId) return;
     d.dx = e.clientX - d.startX;
-    gsap.set(e.currentTarget, { x: d.baseX + d.dx });
+    // Rubber-band at the ends so the drag feels physical rather than hitting a wall
+    const atEdge = (index === 0 && d.dx > 0) || (index === count - 1 && d.dx < 0);
+    gsap.set(e.currentTarget, { x: d.baseX + (atEdge ? d.dx * 0.35 : d.dx) });
   };
   const onUp = (e: PointerEvent<HTMLDivElement>) => {
     const d = drag.current;
     if (!d) return;
     drag.current = null;
     setPaused(false);
-    if (Math.abs(d.dx) > 60) go(index + (d.dx < 0 ? 1 : -1));
+    // A long drag OR a quick flick advances (flick velocity in px/ms)
+    const velocity = Math.abs(d.dx) / Math.max(performance.now() - d.t, 1);
+    const advance = Math.abs(d.dx) > 70 || (Math.abs(d.dx) > 24 && velocity > 0.35);
+    if (advance) go(index + (d.dx < 0 ? 1 : -1));
     else gsap.to(e.currentTarget, { x: targetX(), duration: 0.8, ease: "expo.out" });
   };
 
@@ -72,14 +77,14 @@ export function Testimonials() {
     <section
       aria-labelledby="reviews-title"
       aria-roledescription="carousel"
-      className="relative overflow-hidden border-y border-line bg-ink py-28 md:py-40"
+      className="relative overflow-hidden border-y border-line bg-ink py-20 sm:py-28 lg:py-40"
       onPointerEnter={(e) => e.pointerType === "mouse" && setPaused(true)}
       onPointerLeave={() => setPaused(false)}
       onFocus={() => setPaused(true)}
       onBlur={() => setPaused(false)}
     >
       <div className="mx-auto max-w-[1600px] px-4 sm:px-8">
-        <div className="mb-14 flex flex-wrap items-end justify-between gap-8">
+        <div className="mb-10 flex flex-wrap items-end justify-between gap-6 sm:mb-14 sm:gap-8">
           <div>
             <Reveal as="p" className="eyebrow mb-6 flex items-center gap-3">
               <Star className="h-3 w-3" /> Kind words
@@ -95,7 +100,7 @@ export function Testimonials() {
                 type="button"
                 onClick={() => go(index + (dir === "next" ? 1 : -1))}
                 aria-label={dir === "next" ? "Next review" : "Previous review"}
-                className="flex h-14 w-14 items-center justify-center rounded-full border border-pearl/20 text-pearl transition-colors hover:border-gold hover:text-gold"
+                className="flex h-12 w-12 items-center justify-center rounded-full sm:h-14 sm:w-14 border border-pearl/20 text-pearl transition-colors hover:border-gold hover:text-gold"
               >
                 <svg viewBox="0 0 24 24" className={`h-5 w-5 ${dir === "prev" ? "rotate-180" : ""}`} aria-hidden>
                   <path d="M4 12h15m-6-6 6 6-6 6" fill="none" stroke="currentColor" strokeWidth="1.5" />
@@ -121,22 +126,22 @@ export function Testimonials() {
               aria-roledescription="slide"
               aria-label={`${i + 1} of ${count}`}
               aria-hidden={i !== index}
-              className="w-[86vw] shrink-0 transition-opacity duration-700 sm:w-[70vw] md:w-[52vw]"
+              className="w-[84vw] shrink-0 transition-opacity duration-700 sm:w-[72vw] lg:w-[52vw]"
               style={{ opacity: i === index ? 1 : 0.3 }}
             >
-              <figure className="relative h-full rounded-[4px] border border-line bg-midnight p-8 md:p-14">
+              <figure className="relative h-full rounded-[4px] border border-line bg-midnight p-6 pt-14 sm:p-10 sm:pt-12 lg:p-14">
                 {t.placeholder && (
-                  <span className="absolute right-6 top-6 rounded-full border border-rose/50 px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-rose">
+                  <span className="absolute right-5 top-5 rounded-full sm:right-6 sm:top-6 border border-rose/50 px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-rose">
                     Placeholder
                   </span>
                 )}
-                <span aria-hidden className="block font-display text-7xl leading-none text-gold md:text-8xl">
+                <span aria-hidden className="block font-display text-6xl leading-none text-gold sm:text-7xl lg:text-8xl">
                   &ldquo;
                 </span>
-                <blockquote className="mt-2 font-display text-2xl font-light leading-snug text-pearl md:text-4xl">
+                <blockquote className="mt-2 font-display text-[1.4rem] font-light leading-snug text-pearl sm:text-3xl lg:text-4xl">
                   {t.quote}
                 </blockquote>
-                <figcaption className="mt-10 flex items-center gap-4 text-sm">
+                <figcaption className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm sm:mt-10">
                   <span className="hairline w-10" />
                   <span className="font-semibold text-pearl">{t.name}</span>
                   <span className="text-mist">· {t.service}</span>

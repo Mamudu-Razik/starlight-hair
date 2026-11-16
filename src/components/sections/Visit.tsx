@@ -9,13 +9,13 @@ import { ButtonLink, Arrow } from "@/components/ui/Button";
 const actions = [
   { label: "Call", href: business.phone.href, variant: "gold" as const },
   { label: "Email", href: `mailto:${business.email}`, variant: "outline" as const },
-  { label: "Get directions", href: business.maps.directions, variant: "outline" as const, external: true },
+  { label: "Directions", href: business.maps.directions, variant: "outline" as const, external: true },
   { label: "Instagram", href: business.socials.instagram, variant: "outline" as const, external: true },
 ];
 
 export function Visit() {
   return (
-    <section id="visit" aria-labelledby="visit-title" className="mx-auto max-w-[1600px] px-4 py-28 sm:px-8 md:py-40">
+    <section id="visit" aria-labelledby="visit-title" className="mx-auto max-w-[1600px] px-4 py-20 sm:px-8 sm:py-28 lg:py-40">
       <div className="grid gap-16 lg:grid-cols-12 lg:gap-12">
         <div className="lg:col-span-7">
           <Reveal as="p" className="eyebrow mb-8 flex items-center gap-3">
@@ -27,16 +27,17 @@ export function Visit() {
               {business.address.city} {business.address.postcode}
             </span>
           </Reveal>
-          <Reveal as="p" className="mt-8 max-w-md text-lg text-mist">
+          <Reveal as="p" className="mt-6 max-w-md text-base text-mist sm:mt-8 sm:text-lg">
             {business.address.area}. {business.address.note} — on the Piccadilly line.
           </Reveal>
 
-          <Reveal staggerChildren className="mt-12 flex flex-wrap gap-3">
+          <Reveal staggerChildren className="mt-10 grid grid-cols-2 gap-3 sm:mt-12 sm:flex sm:flex-wrap">
             {actions.map((a) => (
-              <Magnetic key={a.label} strength={0.25}>
+              <Magnetic key={a.label} strength={0.25} className="w-full sm:w-auto">
                 <ButtonLink
                   href={a.href}
                   variant={a.variant}
+                  className="w-full px-4! sm:w-auto sm:px-7!"
                   icon={a.variant === "gold" ? <Arrow /> : undefined}
                   {...(a.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                 >
@@ -47,11 +48,11 @@ export function Visit() {
             ))}
           </Reveal>
 
-          <dl className="mt-14 grid gap-8 text-sm sm:grid-cols-2">
+          <dl className="mt-12 grid gap-8 text-sm sm:mt-14 sm:grid-cols-2">
             <div>
               <dt className="eyebrow mb-2">Phone</dt>
               <dd>
-                <a href={business.phone.href} className="font-display text-3xl text-pearl hover:text-gold">
+                <a href={business.phone.href} className="inline-block py-1 font-display text-3xl text-pearl hover:text-gold">
                   {business.phone.display}
                 </a>
               </dd>
@@ -59,7 +60,7 @@ export function Visit() {
             <div>
               <dt className="eyebrow mb-2">Email</dt>
               <dd>
-                <a href={`mailto:${business.email}`} className="break-all font-display text-2xl text-pearl hover:text-gold">
+                <a href={`mailto:${business.email}`} className="inline-block break-all py-1 font-display text-[1.4rem] text-pearl hover:text-gold sm:text-2xl">
                   {business.email}
                 </a>
               </dd>
@@ -79,7 +80,7 @@ export function Visit() {
             <span aria-hidden className="pointer-events-none absolute inset-0 bg-gold/5 mix-blend-color" />
           </Reveal>
           <div>
-            <div className="mb-4 flex items-center justify-between gap-4">
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
               <h3 className="eyebrow">Opening hours</h3>
               <HoursBadge className="!py-1.5 !text-[0.62rem]" />
             </div>

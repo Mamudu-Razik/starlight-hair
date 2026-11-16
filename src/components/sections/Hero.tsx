@@ -57,13 +57,13 @@ export function Hero() {
       gsap.to("[data-hero-img]", {
         yPercent: 12,
         ease: "none",
-        scrollTrigger: { trigger: el, start: "top top", end: "bottom top", scrub: true },
+        scrollTrigger: { trigger: el, start: "top top", end: "bottom top", scrub: 0.5 },
       });
       gsap.to("[data-hero-copy]", {
         y: -80,
         opacity: 0.2,
         ease: "none",
-        scrollTrigger: { trigger: el, start: "top top", end: "bottom top", scrub: true },
+        scrollTrigger: { trigger: el, start: "top top", end: "bottom top", scrub: 0.5 },
       });
 
       return off;
@@ -80,12 +80,12 @@ export function Hero() {
       ref={root}
       id="top"
       aria-labelledby="hero-title"
-      className="relative isolate flex min-h-[100svh] items-end overflow-hidden pb-14 pt-28 md:items-center md:pb-0"
+      className="relative isolate flex min-h-[100svh] items-end overflow-hidden pb-24 pt-28 sm:pb-16 lg:items-center lg:pb-0"
     >
       {/* Portrait: full-bleed on mobile, right-hand editorial panel on desktop */}
       <div
         data-hero-media
-        className="absolute inset-0 -z-20 md:inset-y-0 md:left-auto md:right-0 md:w-[46%]"
+        className="absolute inset-0 -z-20 lg:inset-y-0 lg:left-auto lg:right-0 lg:w-[46%]"
       >
         <div data-hero-img className="absolute inset-0 will-change-transform">
           <Image
@@ -94,11 +94,11 @@ export function Hero() {
             fill
             priority
             fetchPriority="high"
-            sizes="(min-width: 768px) 46vw, 100vw"
+            sizes="(min-width: 1024px) 46vw, 100vw"
             className="object-cover object-[50%_30%]"
           />
         </div>
-        <div className="absolute inset-0 bg-gradient-to-t from-midnight via-midnight/55 to-midnight/20 md:bg-gradient-to-r md:from-midnight md:via-midnight/30 md:to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-midnight via-midnight/55 to-midnight/20 lg:bg-gradient-to-r lg:from-midnight lg:via-midnight/30 lg:to-transparent" />
       </div>
 
       {!reduce && stars && <StarField className="absolute inset-0 -z-10 h-full w-full" />}
@@ -117,26 +117,26 @@ export function Hero() {
           <span className="sr-only">Hair that shines like starlight</span>
           <span aria-hidden="true">
             <span data-line className="block">Hair that</span>
-            <span data-line className="block md:pl-[0.9em]">shines like</span>
+            <span data-line className="block lg:pl-[0.9em]">shines like</span>
             <span data-line className="block italic text-gold">starlight</span>
           </span>
         </h1>
 
         {/* Deliberately not animated: paints with the first frame so it can serve as the LCP element */}
-        <p className="mt-8 max-w-md text-base leading-relaxed text-mist md:text-lg">
+        <p className="mt-6 max-w-md text-base leading-relaxed text-mist sm:mt-8 md:text-lg">
           {business.tagline}. Cuts for every budget, colour that catches the light, and beauty under one roof.
         </p>
 
-        <div data-intro data-hero-fade className="mt-10 flex flex-wrap items-center gap-4">
-          <Magnetic>
-            <ButtonLink href={business.phone.href} icon={<Arrow />}>
+        <div data-intro data-hero-fade className="mt-8 grid grid-cols-1 gap-3 min-[420px]:flex min-[420px]:flex-wrap min-[420px]:items-center sm:mt-10 sm:gap-4">
+          <Magnetic className="w-full min-[420px]:w-auto">
+            <ButtonLink href={business.phone.href} icon={<Arrow />} className="w-full min-[420px]:w-auto">
               Book an appointment
             </ButtonLink>
           </Magnetic>
-          <Magnetic>
+          <Magnetic className="w-full min-[420px]:w-auto">
             <TransitionLink
               href="/#services"
-              className="group relative inline-flex items-center gap-3 overflow-hidden rounded-full border border-gold/50 px-7 py-4 text-[0.8rem] font-semibold uppercase tracking-[0.18em] text-pearl transition-colors duration-500 hover:text-midnight"
+              className="group relative inline-flex w-full items-center justify-center gap-3 min-[420px]:w-auto overflow-hidden rounded-full border border-gold/50 px-7 py-4 text-[0.8rem] font-semibold uppercase tracking-[0.18em] text-pearl transition-colors duration-500 hover:text-midnight"
             >
               <span
                 aria-hidden
@@ -147,11 +147,11 @@ export function Hero() {
           </Magnetic>
         </div>
 
-        <div data-intro data-hero-fade className="mt-10 flex items-center justify-between gap-6 md:mt-16">
+        <div data-intro data-hero-fade className="mt-8 flex items-center justify-between gap-6 sm:mt-10 lg:mt-16">
           <HoursBadge />
           <TransitionLink
             href="/#marquee"
-            className="group hidden items-center gap-4 text-[0.7rem] font-semibold uppercase tracking-[0.3em] text-mist hover:text-gold md:flex"
+            className="group hidden items-center gap-4 text-[0.7rem] font-semibold uppercase tracking-[0.3em] text-mist hover:text-gold lg:flex"
           >
             Scroll
             <span className="relative block h-12 w-px overflow-hidden bg-pearl/15" aria-hidden>
