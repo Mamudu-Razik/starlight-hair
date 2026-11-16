@@ -1,0 +1,172 @@
+@import "tailwindcss";
+
+@theme {
+  --color-midnight: #0b0b14;
+  --color-ink: #15151f;
+  --color-ink-2: #1d1d2a;
+  --color-gold: #d8b67a;
+  --color-gold-soft: #e9d3a8;
+  --color-pearl: #f4efe8;
+  --color-rose: #c9a3a0;
+  /* Pearl at reduced strength — still ≥ 7:1 on midnight */
+  --color-mist: #b9b4ad;
+  --color-line: rgb(216 182 122 / 0.22);
+
+  --font-display: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
+  --font-sans: var(--font-manrope), "Manrope", ui-sans-serif, system-ui, sans-serif;
+
+  --ease-starlight: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-curtain: cubic-bezier(0.76, 0, 0.24, 1);
+
+  --text-mega: clamp(6rem, 30vw, 34rem);
+  --text-display: clamp(3.25rem, 9.5vw, 9.5rem);
+  --text-headline: clamp(2.5rem, 6vw, 5.75rem);
+}
+
+@layer base {
+  html {
+    background: var(--color-midnight);
+    color: var(--color-pearl);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    background: var(--color-midnight);
+    font-family: var(--font-sans);
+    overflow-x: clip;
+  }
+  ::selection {
+    background: var(--color-gold);
+    color: var(--color-midnight);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 4px;
+    border-radius: 2px;
+  }
+  /* Lenis */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+  .lenis.lenis-stopped {
+    overflow: clip;
+  }
+}
+
+@layer components {
+  .eyebrow {
+    font-family: var(--font-sans);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--color-gold);
+  }
+  .hairline {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--color-gold) 20%, var(--color-gold) 80%, transparent);
+    opacity: 0.45;
+  }
+  .text-outline-gold {
+    color: transparent;
+    -webkit-text-stroke: 1px var(--color-gold);
+  }
+  .glow-gold {
+    box-shadow: 0 0 0 1px rgb(216 182 122 / 0.35), 0 10px 40px -10px rgb(216 182 122 / 0.45);
+  }
+  .split-line {
+    padding-bottom: 0.08em; /* keeps descenders inside the line mask */
+  }
+}
+
+@keyframes scrollcue {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(200%); }
+}
+
+/* Custom cursor replaces the native one on fine pointers (text fields keep theirs) */
+.has-cursor,
+.has-cursor * {
+  cursor: none;
+}
+.has-cursor input,
+.has-cursor textarea {
+  cursor: text;
+}
+
+/* Film grain — a static SVG noise tile, composited once */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.6 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ---------- Intro gating ----------
+   First visit: the hero paints immediately (good LCP) underneath the preloader, which hides the swap.
+   Returning visit (no preloader): hide the hero copy until GSAP takes over, to avoid a flash. */
+html[data-preloaded].js [data-intro] {
+  visibility: hidden;
+}
+/* Preloader letters start below their mask so nothing flashes before hydration */
+.js .preloader [data-letter] {
+  transform: translateY(110%);
+}
+/* Returning visitors skip the preloader instantly — no flash */
+html[data-preloaded] .preloader {
+  display: none;
+}
+
+/* ---------- Gallery fallback on touch: native swipeable carousel ---------- */
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* ---------- Reduced motion: show everything, move nothing ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html[data-preloaded].js [data-intro] {
+    visibility: visible;
+  }
+  .preloader {
+    display: none !important;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ---------- Print (the /services price list) ---------- */
+@media print {
+  html,
+  body {
+    background: #fff !important;
+    color: #111 !important;
+  }
+  .no-print,
+  .grain {
+    display: none !important;
+  }
+  .print-plain {
+    color: #111 !important;
+    background: transparent !important;
+    border-color: #bbb !important;
+  }
+  @page {
+    margin: 16mm;
+  }
+}
